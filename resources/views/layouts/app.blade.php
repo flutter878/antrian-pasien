@@ -38,16 +38,31 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarMain">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-                        <i class="bi bi-house me-1"></i>Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('dokter.*') ? 'active' : '' }}" href="{{ route('dokter.index') }}">
-                        <i class="bi bi-person-badge me-1"></i>Dokter
-                    </a>
-                </li>
+                @auth
+                    @if(auth()->user()->isAdmin())
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
+                                <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                            </a>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('pasien.dashboard') ? 'active' : '' }}" href="{{ route('pasien.dashboard') }}">
+                                <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('pasien.dokter', 'pasien.daftar') ? 'active' : '' }}" href="{{ route('pasien.dokter') }}">
+                                <i class="bi bi-person-badge me-1"></i>Dokter
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('pasien.riwayat') ? 'active' : '' }}" href="{{ route('pasien.riwayat') }}">
+                                <i class="bi bi-clock-history me-1"></i>Riwayat
+                            </a>
+                        </li>
+                    @endif
+                @endauth
             </ul>
             <ul class="navbar-nav ms-auto">
                 @auth

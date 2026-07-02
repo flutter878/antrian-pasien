@@ -20,6 +20,44 @@
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
+                {{-- Notification Dropdown --}}
+                <x-dropdown align="right" width="60">
+                    <x-slot name="trigger">
+                        <button class="relative inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                            <svg class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                            @php $unread = Auth::user()->unreadNotifications->count() @endphp
+                            @if($unread > 0)
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ $unread }}</span>
+                            @endif
+                        </button>
+                    </x-slot>
+
+                    <x-slot name="content">
+                        <div class="px-3 py-2">
+                            <div class="fw-semibold">Notifikasi</div>
+                        </div>
+                        @foreach(Auth::user()->notifications()->latest()->limit(5)->get() as $note)
+                        <div class="dropdown-item px-3 py-2 d-flex align-items-start border-top">
+                            <div class="flex-grow-1">
+                                <div class="small fw-semibold">{{ $note->data['title'] ?? 'Notifikasi' }}</div>
+                                <div class="small text-muted">{{ \Illuminate\Support\Str::limit($note->data['message'] ?? '', 80) }}</div>
+                                <div class="small text-muted">{{ $note->created_at->diffForHumans() }}</div>
+                            </div>
+                            @if(is_null($note->read_at))
+                            <form method="POST" action="{{ route('notifications.read', $note->id) }}" class="ms-2">
+                                @csrf
+                                <button class="btn btn-sm btn-outline-primary">Tandai dibaca</button>
+                            </form>
+                            @endif
+                        </div>
+                        @endforeach
+
+                        <div class="dropdown-footer px-3 py-2 border-top">
+                            <a href="{{ route('notifications.index') }}" class="small text-primary">Lihat semua notifikasi →</a>
+                        </div>
+                    </x-slot>
+                </x-dropdown>
+
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
